@@ -1,0 +1,8 @@
+[package]
+name = "cube"
+version = "0.1.0"
+authors = ["milotodt <milo@milotodt.com>"]
+
+[dependencies]
+
+text_io = "0.1.7"
