@@ -1,12 +1,30 @@
 fn main() {
     let cube1 = build_cube();
-    cube1.print_cube();
+    // cube1.print_cube();
+    let mut cube2 = &cube1;
+    // cube2.sides[0].faces[8] = cube1.sides[2].faces[2];
+    let cube3 = cube2.copy_cube();
+
+    cube2.print_cube();
+    cube3.print_cube();
+    // let side2 = &cube2.sides[0].copy_side();
+    // let side3 = &cube2.sides[0].copy_side();
+    // let side1 = cube2.sides[0].to_string();
+    // println!("{}", &side2.to_string());
+    // println!("{}", &side3.to_string());
+
+    // println!("{}", &side1[0..1]);
 }
- 
 struct Side {
     faces: Vec<char>,
 }
 impl Side {
+    fn copy_side(&self) -> Side {
+        let old_faces = &self.faces;
+        Side {
+            faces: old_faces.clone(),
+        }
+    }
     fn is_solved(&self) -> bool {
         //A side is solved if all faces are equal
         let first_face = &self.faces[0];
@@ -17,12 +35,9 @@ impl Side {
         }
         true
     }
-    fn _print_side(&self) -> String {
+    fn to_string(&self) -> String {
         format!(
-            "
-            {}|{}|{}
-            {}|{}|{}
-            {}|{}|{}",
+            "{}{}{}{}{}{}{}{}{}",
             self.faces[0],
             self.faces[1],
             self.faces[2],
@@ -35,11 +50,24 @@ impl Side {
         )
     }
 }
- 
 struct Cube {
     sides: Vec<Side>,
 }
+
 impl Cube {
+    fn copy_cube(&self) -> Cube {
+        Cube {
+            sides: vec![
+                self.sides[0].copy_side(),
+                self.sides[1].copy_side(),
+                self.sides[2].copy_side(),
+                self.sides[3].copy_side(),
+                self.sides[4].copy_side(),
+                self.sides[5].copy_side(),
+            ],
+        }
+    }
+
     fn is_solved(&self) -> bool {
         //A cube is solved if all sides have all the same colours on their faces.
         for side in &self.sides {
@@ -125,13 +153,16 @@ impl Cube {
             self.sides[3].faces[8]
         )
     }
-    fn rotate_facing_clockwise(&self) -> Cube {
-        let mut new_cube: &Cube  = self;
-        *new_cube.sides[0].faces[0] = self.sides[0].faces[9];
-        *new_cube
-    }
+
+    // fn rotate_facing_clockwise(&self) -> Cube {
+    //     let mut new_cube  = self.clone();
+    //     // let side = self.sides[1].faces[0].to_string();
+    //     new_cube.sides[0].faces[0] = self.sides[1].faces[0];
+    //     new_cube
+
+    // }
 }
- 
+
 fn build_side(colour: char) -> Side {
     //Builds a side of all the same colour faces
     Side {
@@ -151,7 +182,7 @@ fn build_cube() -> Cube {
         ],
     }
 }
- 
+
 #[test]
 fn test_sides() {
     let side1 = build_side('W');
@@ -165,8 +196,9 @@ fn test_sides() {
 fn test_cubes() {
     let cube1 = build_cube();
     let mut cube2 = build_cube();
+    let cube3 = cube1.copy_cube();
     cube2.sides[0].faces[0] = 'B';
- 
+
     assert_eq!(cube1.is_solved(), true);
     assert_eq!(cube2.is_solved(), false);
 }
