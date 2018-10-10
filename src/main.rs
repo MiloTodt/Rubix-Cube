@@ -418,19 +418,33 @@ fn test_cubes() {
     cube2.sides[0].faces[0] = 'B';
     assert_eq!(cube2.is_solved(), false);
 
-    let cube3 = build_cube()
+    let cube3 = build_cube() //rotate one way, and rotate back. Should result in no change.
         .rotate_facing_clockwise()
         .rotate_facing_counter_clockwise()
         .rotate_up_clockwise()
         .rotate_up_counter_clockwise()
         .rotate_right_clockwise()
-        .rotate_right_counter_clockwise();
-    assert_eq!(cube3.is_solved(), true); //rotate one way, and rotate back.
+        .rotate_right_counter_clockwise()
+        .rotate_down_clockwise()
+        .rotate_down_counter_clockwise();
+    assert_eq!(cube3.is_solved(), true); 
 
-    let cube4 = build_cube()
+    let cube4 = build_cube()//Four rotations in same direction should result in no change.
         .rotate_facing_clockwise()
         .rotate_facing_clockwise()
         .rotate_facing_clockwise()
-        .rotate_facing_clockwise();
-    assert_eq!(cube4.is_solved(), true); //Four rotations in same direction
+        .rotate_facing_clockwise()
+        .rotate_up_clockwise()
+        .rotate_up_clockwise()
+        .rotate_up_clockwise()
+        .rotate_up_clockwise()
+        .rotate_right_clockwise()
+        .rotate_right_clockwise()
+        .rotate_right_clockwise()
+        .rotate_right_clockwise()
+        .rotate_down_clockwise()
+        .rotate_down_clockwise()
+        .rotate_down_clockwise()
+        .rotate_down_clockwise();
+    assert_eq!(cube4.is_solved(), true); 
 }
