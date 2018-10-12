@@ -43,6 +43,8 @@ impl Side {
 }
 struct Cube {
     sides: Vec<Side>,
+    previous_moves: Vec<String>,
+    num_moves: u8
 }
 impl Cube {
     fn copy_cube(&self) -> Cube {
@@ -55,6 +57,8 @@ impl Cube {
                 self.sides[4].copy_side(),
                 self.sides[5].copy_side(),
             ],
+            previous_moves: self.previous_moves.clone(),
+            num_moves: self.num_moves,
         }
     }
 
@@ -67,6 +71,7 @@ impl Cube {
         }
         true
     }
+
     fn print_cube(&self) -> () {
         println!(
             "
@@ -143,7 +148,6 @@ impl Cube {
             self.sides[3].faces[8]
         )
     }
-
     fn rotate_facing_clockwise(&self) -> Cube {
         let mut new_cube = self.copy_cube();
         //rotate top side
@@ -511,6 +515,8 @@ fn build_cube() -> Cube {
             build_side('G'),
             build_side('O'),
         ],
+        previous_moves: vec![String::from("")],
+        num_moves: 0,
     }
 }
 
