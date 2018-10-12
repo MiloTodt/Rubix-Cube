@@ -376,7 +376,7 @@ impl Cube {
         new_cube.sides[5].faces[8] = self.sides[4].faces[8];
         new_cube
     }
-        fn rotate_left_clockwise(&self) -> Cube {
+    fn rotate_left_clockwise(&self) -> Cube {
         let mut new_cube = self.copy_cube();
         //rotate down side
         new_cube.sides[4].faces[0] = self.sides[4].faces[6];
@@ -405,7 +405,7 @@ impl Cube {
         new_cube.sides[5].faces[8] = self.sides[3].faces[6];
         new_cube
     }
-            fn rotate_left_counter_clockwise(&self) -> Cube {
+    fn rotate_left_counter_clockwise(&self) -> Cube {
         let mut new_cube = self.copy_cube();
         //rotate down side
         new_cube.sides[4].faces[6] = self.sides[4].faces[0];
@@ -434,7 +434,7 @@ impl Cube {
         new_cube.sides[3].faces[6] = self.sides[5].faces[8];
         new_cube
     }
-        fn rotate_bottom_clockwise(&self) -> Cube {
+    fn rotate_bottom_clockwise(&self) -> Cube {
         let mut new_cube = self.copy_cube();
         //rotate down side
         new_cube.sides[5].faces[0] = self.sides[5].faces[6];
@@ -543,10 +543,14 @@ fn test_cubes() {
         .rotate_right_clockwise()
         .rotate_right_counter_clockwise()
         .rotate_down_clockwise()
-        .rotate_down_counter_clockwise();
-    assert_eq!(cube3.is_solved(), true); 
+        .rotate_down_counter_clockwise()
+        .rotate_left_clockwise()
+        .rotate_left_counter_clockwise()
+        .rotate_bottom_clockwise()
+        .rotate_bottom_counter_clockwise();
+    assert_eq!(cube3.is_solved(), true);
 
-    let cube4 = build_cube()//Four rotations in same direction should result in no change.
+    let cube4 = build_cube() //Four rotations in same direction should result in no change.
         .rotate_facing_clockwise()
         .rotate_facing_clockwise()
         .rotate_facing_clockwise()
@@ -559,9 +563,17 @@ fn test_cubes() {
         .rotate_right_clockwise()
         .rotate_right_clockwise()
         .rotate_right_clockwise()
+        .rotate_bottom_clockwise()
+        .rotate_bottom_clockwise()
+        .rotate_bottom_clockwise()
+        .rotate_bottom_clockwise()
+        .rotate_left_clockwise()
+        .rotate_left_clockwise()
+        .rotate_left_clockwise()
+        .rotate_left_clockwise()
         .rotate_down_clockwise()
         .rotate_down_clockwise()
         .rotate_down_clockwise()
         .rotate_down_clockwise();
-    assert_eq!(cube4.is_solved(), true); 
+    assert_eq!(cube4.is_solved(), true);
 }
