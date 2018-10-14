@@ -1,25 +1,47 @@
 extern crate rand;
 
+
 use rand::prelude::*; // For random number generation
+use std::rc::Rc; //reference counting smart pointer
+static mut SOLVE_DEPTH: u32 = 50;
 
 fn main() {
-    let cube3 = build_cube()
-        .rotate_facing_clockwise()
-        .rotate_facing_counter_clockwise()
-        .rotate_up_clockwise()
-        .rotate_bottom_counter_clockwise()
-        .rotate_bottom_counter_clockwise();
-
-        cube3.print_cube();
-        cube3.print_moves();
-
-        let cube3 = build_cube();
-        let cube3 = cube3.scramble_cube(10000);
-        cube3.print_cube();
-        cube3.print_moves();
-
-
+    let cube3 = build_cube();
+    let cube3 = cube3.scramble_cube(1);
+    cube3.print_cube();
+    println!("{:?}", cube3.previous_moves);
+    let cube3 = cube3.reset_moves();
+    solve_cube(cube3);
 }
+fn solve_cube(in_cube: Cube) -> Vec<String> {
+    unsafe{if in_cube.num_moves >= SOLVE_DEPTH {return false;}}
+    if in_cube.is_solved() {
+        unsafe{
+        if in_cube.num_moves < SOLVE_DEPTH{
+            
+                SOLVE_DEPTH = in_cube.num_moves;
+            }
+        } 
+        println!("{:?}", in_cube.previous_moves);
+        return true;
+        }
+    else{
+        solve_cube(in_cube.rotate_bottom_clockwise());
+        solve_cube(in_cube.rotate_bottom_counter_clockwise());
+        solve_cube(in_cube.rotate_down_clockwise());
+        solve_cube(in_cube.rotate_down_counter_clockwise());
+        solve_cube(in_cube.rotate_facing_clockwise());
+        solve_cube(in_cube.rotate_facing_counter_clockwise());
+        solve_cube(in_cube.rotate_left_clockwise());
+        solve_cube(in_cube.rotate_left_counter_clockwise());
+        solve_cube(in_cube.rotate_right_clockwise());
+        solve_cube(in_cube.rotate_right_counter_clockwise());
+        solve_cube(in_cube.rotate_up_clockwise());
+        solve_cube(in_cube.rotate_up_counter_clockwise());
+        false
+        }
+    }
+
 struct Side {
     faces: Vec<char>,
 }
@@ -75,7 +97,6 @@ impl Cube {
             num_moves: self.num_moves,
         }
     }
-
     fn is_solved(&self) -> bool {
         //A cube is solved if all sides have all the same colours on their faces.
         for side in &self.sides {
@@ -162,16 +183,19 @@ impl Cube {
             self.sides[3].faces[8]
         )
     }
-    fn print_moves(&self) ->() {
-        println!("
+    fn print_moves(&self) -> () {
+        println!(
+            "
         Num moves: {}
         Move list: {:?}",
-        self.num_moves,
-        self.previous_moves);
+            self.num_moves, self.previous_moves
+        );
     }
     fn scramble_cube(&self, n: u16) -> Cube {
+        //Applies n random moves to cube.
         let mut new_cube = self.copy_cube();
-        for _ in 0..n { //Loop runs n times.
+        for _ in 0..n {
+            //Loop runs n times. Underscore for variable name means we don't use the index for anything.
             let rng = thread_rng().gen_range(0, 12); //Random int from 0 to 11
             let rotated_cube = match rng {
                 0 => new_cube.rotate_bottom_clockwise(),
@@ -186,13 +210,14 @@ impl Cube {
                 9 => new_cube.rotate_right_counter_clockwise(),
                 10 => new_cube.rotate_up_clockwise(),
                 11 => new_cube.rotate_up_counter_clockwise(),
-                _ => panic!("RNG ran out of bounds!")
+                _ => panic!("RNG ran out of bounds!"),
             };
-            new_cube = rotated_cube.copy_cube();
+            new_cube = rotated_cube;
         }
         new_cube
     }
-    fn reset_moves(&self) -> Cube{
+    fn reset_moves(&self) -> Cube {
+        //Blanks the list of previous moves, keeps the state of the cube intact.
         let mut new_cube = self.copy_cube();
         new_cube.previous_moves = vec![];
         new_cube.num_moves = 0;
@@ -238,10 +263,10 @@ impl Cube {
         new_cube.sides[0].faces[3] = self.sides[0].faces[1];
         new_cube.sides[0].faces[0] = self.sides[0].faces[2];
         new_cube.sides[0].faces[7] = self.sides[0].faces[3];
-        new_cube.sides[0].faces[1] = self.sides[0].faces[4];
-        new_cube.sides[0].faces[8] = self.sides[0].faces[5];
-        new_cube.sides[0].faces[5] = self.sides[0].faces[6];
-        new_cube.sides[0].faces[2] = self.sides[0].faces[7];
+        new_cube.sides[0].faces[1] = self.sides[0].faces[5];
+        new_cube.sides[0].faces[8] = self.sides[0].faces[6];
+        new_cube.sides[0].faces[5] = self.sides[0].faces[7];
+        new_cube.sides[0].faces[2] = self.sides[0].faces[8];
         //rotate Down side, top row
         new_cube.sides[3].faces[0] = self.sides[4].faces[2];
         new_cube.sides[3].faces[1] = self.sides[4].faces[5];
@@ -632,7 +657,6 @@ fn test_cubes() {
     assert_eq!(cube3.is_solved(), true);
     assert_eq!(cube3.num_moves, 12);
 
-
     let cube4 = build_cube() //Four rotations in same direction should result in no change.
         .rotate_facing_clockwise()
         .rotate_facing_clockwise()
@@ -660,5 +684,4 @@ fn test_cubes() {
         .rotate_down_clockwise();
     assert_eq!(cube4.is_solved(), true);
     assert_eq!(cube4.num_moves, 24);
-
 }
