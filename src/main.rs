@@ -14,7 +14,7 @@ fn main() {
         cube3.print_moves();
 
         let cube3 = build_cube();
-        let cube3 = cube3.scramble_cube();
+        let cube3 = cube3.scramble_cube(10000);
         cube3.print_cube();
         cube3.print_moves();
 
@@ -169,24 +169,27 @@ impl Cube {
         self.num_moves,
         self.previous_moves);
     }
-    fn scramble_cube(&self) -> Cube {
-        let rng = thread_rng().gen_range(0, 12); //Random int from 0 to 11
-        let new_cube = self.copy_cube();
-        let new_cube = match rng {
-            0 => new_cube.rotate_bottom_clockwise(),
-            1 => new_cube.rotate_bottom_counter_clockwise(),
-            2 => new_cube.rotate_down_clockwise(),
-            3 => new_cube.rotate_down_counter_clockwise(),
-            4 => new_cube.rotate_facing_clockwise(),
-            5 => new_cube.rotate_facing_counter_clockwise(),
-            6 => new_cube.rotate_left_clockwise(),
-            7 => new_cube.rotate_left_counter_clockwise(),
-            8 => new_cube.rotate_right_clockwise(),
-            9 => new_cube.rotate_right_counter_clockwise(),
-            10 => new_cube.rotate_up_clockwise(),
-            11 => new_cube.rotate_up_counter_clockwise(),
-            _ => panic!("RNG ran out of bounds!")
-        };
+    fn scramble_cube(&self, n: u16) -> Cube {
+        let mut new_cube = self.copy_cube();
+        for _ in 0..n { //Loop runs n times.
+            let rng = thread_rng().gen_range(0, 12); //Random int from 0 to 11
+            let rotated_cube = match rng {
+                0 => new_cube.rotate_bottom_clockwise(),
+                1 => new_cube.rotate_bottom_counter_clockwise(),
+                2 => new_cube.rotate_down_clockwise(),
+                3 => new_cube.rotate_down_counter_clockwise(),
+                4 => new_cube.rotate_facing_clockwise(),
+                5 => new_cube.rotate_facing_counter_clockwise(),
+                6 => new_cube.rotate_left_clockwise(),
+                7 => new_cube.rotate_left_counter_clockwise(),
+                8 => new_cube.rotate_right_clockwise(),
+                9 => new_cube.rotate_right_counter_clockwise(),
+                10 => new_cube.rotate_up_clockwise(),
+                11 => new_cube.rotate_up_counter_clockwise(),
+                _ => panic!("RNG ran out of bounds!")
+            };
+            new_cube = rotated_cube.copy_cube();
+        }
         new_cube
     }
     fn reset_moves(&self) -> Cube{
