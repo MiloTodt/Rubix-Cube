@@ -2,19 +2,48 @@ extern crate rand;
 
 
 use rand::prelude::*; // For random number generation
-use std::rc::Rc; //reference counting smart pointer
-static mut SOLVE_DEPTH: u32 = 50;
+use std::thread;
+
+static mut SOLVE_DEPTH: u32 = 8;
 
 fn main() {
+
     let cube3 = build_cube();
-    let cube3 = cube3.scramble_cube(1);
+    let cube3 = cube3.scramble_cube(7);
     cube3.print_cube();
     println!("{:?}", cube3.previous_moves);
     let cube3 = cube3.reset_moves();
-    solve_cube(cube3);
+    // solve_cube(cube3);
+
+    let handles: Vec<_> = starter_cubes(cube3).into_iter().map(|c| {
+        thread::spawn(move || {
+            solve_cube(c);
+        })
+    }).collect();
+
+    for h in handles {
+        h.join().unwrap();
 }
-fn solve_cube(in_cube: Cube) -> Vec<String> {
-    unsafe{if in_cube.num_moves >= SOLVE_DEPTH {return false;}}
+}
+fn starter_cubes(old_cube: Cube) -> Vec<Cube>{
+    let in_cube = old_cube.copy_cube();
+    let mut out_cubes = vec![];
+    out_cubes.push(in_cube.rotate_bottom_clockwise());
+    out_cubes.push(in_cube.rotate_bottom_counter_clockwise());
+    out_cubes.push(in_cube.rotate_down_clockwise());
+    out_cubes.push(in_cube.rotate_down_counter_clockwise());
+    out_cubes.push(in_cube.rotate_facing_clockwise());
+    out_cubes.push(in_cube.rotate_facing_counter_clockwise());
+    out_cubes.push(in_cube.rotate_left_clockwise());
+    out_cubes.push(in_cube.rotate_left_counter_clockwise());
+    out_cubes.push(in_cube.rotate_right_clockwise());
+    out_cubes.push(in_cube.rotate_right_counter_clockwise());
+    out_cubes.push(in_cube.rotate_up_clockwise());
+    out_cubes.push(in_cube.rotate_up_counter_clockwise());
+    out_cubes
+}
+fn solve_cube(in_cube: Cube) -> () {
+    unsafe{if in_cube.num_moves >= SOLVE_DEPTH {return;}}
     if in_cube.is_solved() {
         unsafe{
         if in_cube.num_moves < SOLVE_DEPTH{
@@ -23,7 +52,6 @@ fn solve_cube(in_cube: Cube) -> Vec<String> {
             }
         } 
         println!("{:?}", in_cube.previous_moves);
-        return true;
         }
     else{
         solve_cube(in_cube.rotate_bottom_clockwise());
@@ -38,7 +66,6 @@ fn solve_cube(in_cube: Cube) -> Vec<String> {
         solve_cube(in_cube.rotate_right_counter_clockwise());
         solve_cube(in_cube.rotate_up_clockwise());
         solve_cube(in_cube.rotate_up_counter_clockwise());
-        false
         }
     }
 
