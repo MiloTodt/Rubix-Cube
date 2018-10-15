@@ -1,5 +1,5 @@
 # Rubix-Cube
-## Multithreaded brute force Rubix Cube solver
+## Multithreaded recursive brute force Rubix Cube solver
 
 Finds the minimal number of moves to solve a Rubix cube utilizing a Spanning Tree.
 Written fully by hand in Rust.
