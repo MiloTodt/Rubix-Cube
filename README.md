@@ -6,20 +6,21 @@ Written fully by hand in Rust.
 
 The notation used is https://solvethecube.com/notation
 
-## Requirements: 
+## Requirements 
 Rust tool chain. Install with
 ```
 curl https://sh.rustup.rs -sSf | sh
 ```
 
-## To run: 
+## To run
 From base directory of project:
 
 ```
 cargo build --release
 time target/release/cube
 ```
-## Example Outputs:
+## Example Outputs
 
 ![Output 1](https://i.imgur.com/19jNDp7.png)
 ![Output 2](https://i.imgur.com/cCKYDHl.png)
+![Output 3](https://i.imgur.com/EGhITsJ.png)
