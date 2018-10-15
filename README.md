@@ -20,3 +20,6 @@ cargo build --release
 time target/release/cube
 ```
 ## Example Outputs:
+
+![Output 1](https://i.imgur.com/19jNDp7.png)
+![Output 2](https://i.imgur.com/cCKYDHl.png)
