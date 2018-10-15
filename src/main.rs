@@ -3,20 +3,34 @@ extern crate rand;
 use rand::prelude::*; // For random number generation
 use std::thread;
 
-
 static mut SOLVE_DEPTH: u32 = 9;
 
 fn main() {
-    let cube3 = build_cube();
-    let cube3 = cube3.scramble_cube(8);
-    cube3.print_cube();
+    let test_cube = build_cube()
+        .rotate_facing_clockwise()
+        .rotate_up_clockwise()
+        .rotate_right_clockwise()
+        .rotate_down_clockwise()
+        .rotate_left_clockwise()
+        .rotate_down_clockwise()
+        .rotate_down_counter_clockwise()
+        .rotate_bottom_counter_clockwise();
     println!(
         "Applied {} random moves to cube: {:?}",
-        cube3.num_moves, cube3.previous_moves
+        test_cube.num_moves, test_cube.previous_moves
     );
-    let cube3 = cube3.forget_moves();
+    let test_cube = test_cube.forget_moves();
 
-    let handles: Vec<_> = starter_cubes(cube3)
+    // let cube3 = build_cube();
+    // let cube3 = cube3.scramble_cube(8);
+    // cube3.print_cube();
+    // println!(
+    //     "Applied {} random moves to cube: {:?}",
+    //     cube3.num_moves, cube3.previous_moves
+    // );
+    // let cube3 = cube3.forget_moves();
+
+    let handles: Vec<_> = starter_cubes(test_cube)
         .into_iter()
         .map(|c| {
             thread::spawn(move || {
@@ -28,23 +42,10 @@ fn main() {
         h.join().unwrap();
     }
 }
-fn starter_cubes(old_cube: Cube) -> Vec<Cube> { //The first 144 cubes for thread seed data.
+fn starter_cubes(old_cube: Cube) -> Vec<Cube> {
+    //The first 144 cubes for thread seed data.
     let in_cube = old_cube.copy_cube();
-    let mut out_cubes1 = vec![];
-    out_cubes1.push(in_cube.rotate_bottom_clockwise());
-    out_cubes1.push(in_cube.rotate_bottom_counter_clockwise());
-    out_cubes1.push(in_cube.rotate_down_clockwise());
-    out_cubes1.push(in_cube.rotate_down_counter_clockwise());
-    out_cubes1.push(in_cube.rotate_facing_clockwise());
-    out_cubes1.push(in_cube.rotate_facing_counter_clockwise());
-    out_cubes1.push(in_cube.rotate_left_clockwise());
-    out_cubes1.push(in_cube.rotate_left_counter_clockwise());
-    out_cubes1.push(in_cube.rotate_right_clockwise());
-    out_cubes1.push(in_cube.rotate_right_counter_clockwise());
-    out_cubes1.push(in_cube.rotate_up_clockwise());
-    out_cubes1.push(in_cube.rotate_up_counter_clockwise());
     let mut out_cubes = vec![];
-    for in_cube in &out_cubes1{
     out_cubes.push(in_cube.rotate_bottom_clockwise());
     out_cubes.push(in_cube.rotate_bottom_counter_clockwise());
     out_cubes.push(in_cube.rotate_down_clockwise());
@@ -57,7 +58,6 @@ fn starter_cubes(old_cube: Cube) -> Vec<Cube> { //The first 144 cubes for thread
     out_cubes.push(in_cube.rotate_right_counter_clockwise());
     out_cubes.push(in_cube.rotate_up_clockwise());
     out_cubes.push(in_cube.rotate_up_counter_clockwise());
-    }
     out_cubes
 }
 fn solve_cube(in_cube: Cube) -> () {
@@ -76,8 +76,7 @@ fn solve_cube(in_cube: Cube) -> () {
             "Found solution in {} moves:  {:?}",
             in_cube.num_moves, in_cube.previous_moves
         );
-    }
-     else {
+    } else {
         //This statement prevents doing the opposite of the previous move.
         // println!("Current level: {}", in_cube.num_moves);
         let last_move = in_cube.previous_moves.last().unwrap().as_str();
@@ -276,20 +275,6 @@ impl Side {
             }
         }
         true
-    }
-    fn _to_string(&self) -> String {
-        format!(
-            "{}{}{}{}{}{}{}{}{}",
-            self.faces[0],
-            self.faces[1],
-            self.faces[2],
-            self.faces[3],
-            self.faces[4],
-            self.faces[5],
-            self.faces[6],
-            self.faces[7],
-            self.faces[8]
-        )
     }
 }
 struct Cube {
