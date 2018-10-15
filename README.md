@@ -13,7 +13,7 @@ curl https://sh.rustup.rs -sSf | sh
 ```
 
 ## To run
-From base directory of project:
+From base directory of project
 
 ```
 cargo build --release
