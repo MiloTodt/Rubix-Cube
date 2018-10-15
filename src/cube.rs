@@ -1,5 +1,3 @@
-
-
 use rand::prelude::*; // For random number generation
 
 pub struct Side {
@@ -53,6 +51,38 @@ impl Cube {
         true
     }
 
+    pub fn scramble_cube(&self, n: u8) -> Cube {
+        //Applies n random moves to cube.
+        let mut new_cube = self.copy_cube();
+        for _ in 0..n {
+            //Loop runs n times. Underscore for variable name means we don't use the index for anything.
+            let rng = thread_rng().gen_range(0, 12); //Random int from 0 to 11
+            let rotated_cube = match rng {
+                0 => new_cube.rotate_bottom_clockwise(),
+                1 => new_cube.rotate_bottom_counter_clockwise(),
+                2 => new_cube.rotate_down_clockwise(),
+                3 => new_cube.rotate_down_counter_clockwise(),
+                4 => new_cube.rotate_facing_clockwise(),
+                5 => new_cube.rotate_facing_counter_clockwise(),
+                6 => new_cube.rotate_left_clockwise(),
+                7 => new_cube.rotate_left_counter_clockwise(),
+                8 => new_cube.rotate_right_clockwise(),
+                9 => new_cube.rotate_right_counter_clockwise(),
+                10 => new_cube.rotate_up_clockwise(),
+                11 => new_cube.rotate_up_counter_clockwise(),
+                _ => panic!("RNG ran out of bounds!"), //Should never happen
+            };
+            new_cube = rotated_cube;
+        }
+        new_cube
+    }
+    pub fn forget_moves(&self) -> Cube {
+        //Blanks the list of previous moves, keeps the state of the cube intact.
+        let mut new_cube = self.copy_cube();
+        new_cube.previous_moves = vec![];
+        new_cube.num_moves = 0;
+        new_cube
+    }
     pub fn print_cube(&self) -> () {
         println!(
             "
@@ -128,46 +158,6 @@ impl Cube {
             self.sides[3].faces[7],
             self.sides[3].faces[8]
         )
-    }
-    pub fn _print_moves(&self) -> () {
-        println!(
-            "
-        Num moves: {}
-        Move list: {:?}",
-            self.num_moves, self.previous_moves
-        );
-    }
-    pub fn scramble_cube(&self, n: u16) -> Cube {
-        //Applies n random moves to cube.
-        let mut new_cube = self.copy_cube();
-        for _ in 0..n {
-            //Loop runs n times. Underscore for variable name means we don't use the index for anything.
-            let rng = thread_rng().gen_range(0, 12); //Random int from 0 to 11
-            let rotated_cube = match rng {
-                0 => new_cube.rotate_bottom_clockwise(),
-                1 => new_cube.rotate_bottom_counter_clockwise(),
-                2 => new_cube.rotate_down_clockwise(),
-                3 => new_cube.rotate_down_counter_clockwise(),
-                4 => new_cube.rotate_facing_clockwise(),
-                5 => new_cube.rotate_facing_counter_clockwise(),
-                6 => new_cube.rotate_left_clockwise(),
-                7 => new_cube.rotate_left_counter_clockwise(),
-                8 => new_cube.rotate_right_clockwise(),
-                9 => new_cube.rotate_right_counter_clockwise(),
-                10 => new_cube.rotate_up_clockwise(),
-                11 => new_cube.rotate_up_counter_clockwise(),
-                _ => panic!("RNG ran out of bounds!"),
-            };
-            new_cube = rotated_cube;
-        }
-        new_cube
-    }
-    pub fn forget_moves(&self) -> Cube {
-        //Blanks the list of previous moves, keeps the state of the cube intact.
-        let mut new_cube = self.copy_cube();
-        new_cube.previous_moves = vec![];
-        new_cube.num_moves = 0;
-        new_cube
     }
     pub fn rotate_facing_clockwise(&self) -> Cube {
         let mut new_cube = self.copy_cube();
@@ -542,5 +532,3 @@ impl Cube {
         new_cube
     }
 }
-
-

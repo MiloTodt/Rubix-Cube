@@ -3,37 +3,24 @@ mod cube;
 
 use cube::Cube;
 use cube::Side;
-use rand::prelude::*; // For random number generation
 use std::thread;
 
-static mut SOLVE_DEPTH: u8 = 9;
+static NUMBER_OF_MOVES: u8 = 8; //Number of random moves applied to cube. Setting this higher will take a long time by a factor of 11^N 
+static mut SOLVE_DEPTH: u8 = NUMBER_OF_MOVES + 1;
 
 fn main() {
-    let test_cube = build_cube()
-        .rotate_facing_clockwise()
-        .rotate_up_clockwise()
-        .rotate_right_clockwise()
-        .rotate_down_clockwise()
-        .rotate_left_clockwise()
-        .rotate_down_clockwise()
-        .rotate_down_counter_clockwise()
-        .rotate_bottom_counter_clockwise();
+    let cube = build_cube();
+    let cube = cube.scramble_cube(NUMBER_OF_MOVES);
+
+    cube.print_cube();
     println!(
         "Applied {} random moves to cube: {:?}",
-        test_cube.num_moves, test_cube.previous_moves
+        cube.num_moves, cube.previous_moves
     );
-    let test_cube = test_cube.forget_moves();
 
-    // let cube3 = build_cube();
-    // let cube3 = cube3.scramble_cube(8);
-    // cube3.print_cube();
-    // println!(
-    //     "Applied {} random moves to cube: {:?}",
-    //     cube3.num_moves, cube3.previous_moves
-    // );
-    // let cube3 = cube3.forget_moves();
+    let cube = cube.forget_moves(); //Blanks the list of previous moves, keeps the state of the cube faces.
 
-    let handles: Vec<_> = starter_cubes(test_cube)
+    let handles: Vec<_> = starter_cubes(cube) //12 threads, based on the first 12 states of the cube.
         .into_iter()
         .map(|c| {
             thread::spawn(move || {
@@ -82,7 +69,6 @@ fn solve_cube(in_cube: Cube) -> () {
     } else {
         //This statement prevents doing the opposite of the previous move, which would revert the previous move and put it to a state that has already been checked.
         //From benchmarking tests, this reduces runtime by about 30%
-        // println!("Current level: {}", in_cube.num_moves);
         let last_move = in_cube.previous_moves.last().unwrap().as_str();
         match last_move {
             "F" => {
@@ -259,7 +245,6 @@ fn solve_cube(in_cube: Cube) -> () {
         }
     }
 }
-
 
 fn build_cube() -> Cube {
     //Builds a solved cube
