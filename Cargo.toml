@@ -5,5 +5,4 @@ authors = ["milotodt <milo@milotodt.com>"]
 
 [dependencies]
 
-text_io = "0.1.7"
 rand = "0.5"
