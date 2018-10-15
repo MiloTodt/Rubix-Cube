@@ -3,7 +3,7 @@ extern crate rand;
 use rand::prelude::*; // For random number generation
 use std::thread;
 
-static mut SOLVE_DEPTH: u32 = 9;
+static mut SOLVE_DEPTH: u8 = 9;
 
 fn main() {
     let test_cube = build_cube()
@@ -43,7 +43,7 @@ fn main() {
     }
 }
 fn starter_cubes(old_cube: Cube) -> Vec<Cube> {
-    //The first 144 cubes for thread seed data.
+    //The first 12 cubes for thread seed data.
     let in_cube = old_cube.copy_cube();
     let mut out_cubes = vec![];
     out_cubes.push(in_cube.rotate_bottom_clockwise());
@@ -77,7 +77,8 @@ fn solve_cube(in_cube: Cube) -> () {
             in_cube.num_moves, in_cube.previous_moves
         );
     } else {
-        //This statement prevents doing the opposite of the previous move.
+        //This statement prevents doing the opposite of the previous move, which would revert the previous move and put it to a state that has already been checked.
+        //From benchmarking tests, this reduces runtime by about 30%
         // println!("Current level: {}", in_cube.num_moves);
         let last_move = in_cube.previous_moves.last().unwrap().as_str();
         match last_move {
@@ -280,7 +281,7 @@ impl Side {
 struct Cube {
     sides: Vec<Side>,
     previous_moves: Vec<String>,
-    num_moves: u32,
+    num_moves: u8,
 }
 impl Cube {
     fn copy_cube(&self) -> Cube {
@@ -520,7 +521,6 @@ impl Cube {
         let mut new_cube = self.copy_cube();
         new_cube.previous_moves.push("U`".to_string());
         new_cube.num_moves += 1;
-
         //rotate up side
         new_cube.sides[1].faces[6] = self.sides[1].faces[0];
         new_cube.sides[1].faces[3] = self.sides[1].faces[1];
