@@ -9,8 +9,7 @@ static NUMBER_OF_MOVES: u8 = 7; //Number of random moves applied to cube. Settin
 static mut SOLVE_DEPTH: u8 = NUMBER_OF_MOVES + 1;
 
 fn main() {
-    let cube = build_cube();
-    let cube = cube.scramble_cube(NUMBER_OF_MOVES);
+    let cube = build_cube().scramble_cube(NUMBER_OF_MOVES);
 
     cube.print_cube();
     println!(
@@ -76,26 +75,26 @@ fn solve_cube(in_cube: Cube) -> () {
                 solve_cube(in_cube.rotate_bottom_counter_clockwise());
                 solve_cube(in_cube.rotate_down_clockwise());
                 solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
                 solve_cube(in_cube.rotate_left_clockwise());
                 solve_cube(in_cube.rotate_left_counter_clockwise());
                 solve_cube(in_cube.rotate_right_clockwise());
                 solve_cube(in_cube.rotate_right_counter_clockwise());
                 solve_cube(in_cube.rotate_up_clockwise());
                 solve_cube(in_cube.rotate_up_counter_clockwise());
+                solve_cube(in_cube.rotate_facing_clockwise());
             }
             "F`" => {
                 solve_cube(in_cube.rotate_bottom_clockwise());
                 solve_cube(in_cube.rotate_bottom_counter_clockwise());
                 solve_cube(in_cube.rotate_down_clockwise());
                 solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
                 solve_cube(in_cube.rotate_left_clockwise());
                 solve_cube(in_cube.rotate_left_counter_clockwise());
                 solve_cube(in_cube.rotate_right_clockwise());
                 solve_cube(in_cube.rotate_right_counter_clockwise());
                 solve_cube(in_cube.rotate_up_clockwise());
                 solve_cube(in_cube.rotate_up_counter_clockwise());
+                solve_cube(in_cube.rotate_facing_counter_clockwise());
             }
             "U" => {
                 solve_cube(in_cube.rotate_bottom_clockwise());
@@ -127,7 +126,6 @@ fn solve_cube(in_cube: Cube) -> () {
             "D" => {
                 solve_cube(in_cube.rotate_bottom_clockwise());
                 solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_down_clockwise());
                 solve_cube(in_cube.rotate_facing_clockwise());
                 solve_cube(in_cube.rotate_facing_counter_clockwise());
                 solve_cube(in_cube.rotate_left_clockwise());
@@ -136,11 +134,11 @@ fn solve_cube(in_cube: Cube) -> () {
                 solve_cube(in_cube.rotate_right_counter_clockwise());
                 solve_cube(in_cube.rotate_up_clockwise());
                 solve_cube(in_cube.rotate_up_counter_clockwise());
+                solve_cube(in_cube.rotate_down_clockwise());
             }
             "D`" => {
                 solve_cube(in_cube.rotate_bottom_clockwise());
                 solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
                 solve_cube(in_cube.rotate_facing_clockwise());
                 solve_cube(in_cube.rotate_facing_counter_clockwise());
                 solve_cube(in_cube.rotate_left_clockwise());
@@ -149,6 +147,7 @@ fn solve_cube(in_cube: Cube) -> () {
                 solve_cube(in_cube.rotate_right_counter_clockwise());
                 solve_cube(in_cube.rotate_up_clockwise());
                 solve_cube(in_cube.rotate_up_counter_clockwise());
+                solve_cube(in_cube.rotate_down_counter_clockwise());
             }
             "L" => {
                 solve_cube(in_cube.rotate_bottom_clockwise());
@@ -157,10 +156,10 @@ fn solve_cube(in_cube: Cube) -> () {
                 solve_cube(in_cube.rotate_down_counter_clockwise());
                 solve_cube(in_cube.rotate_facing_clockwise());
                 solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
                 solve_cube(in_cube.rotate_right_clockwise());
                 solve_cube(in_cube.rotate_right_counter_clockwise());
                 solve_cube(in_cube.rotate_up_clockwise());
+                solve_cube(in_cube.rotate_left_clockwise());
                 solve_cube(in_cube.rotate_up_counter_clockwise());
             }
             "L`" => {
@@ -170,10 +169,10 @@ fn solve_cube(in_cube: Cube) -> () {
                 solve_cube(in_cube.rotate_down_counter_clockwise());
                 solve_cube(in_cube.rotate_facing_clockwise());
                 solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
                 solve_cube(in_cube.rotate_right_clockwise());
                 solve_cube(in_cube.rotate_right_counter_clockwise());
                 solve_cube(in_cube.rotate_up_clockwise());
+                solve_cube(in_cube.rotate_left_counter_clockwise());
                 solve_cube(in_cube.rotate_up_counter_clockwise());
             }
             "R" => {
@@ -185,9 +184,9 @@ fn solve_cube(in_cube: Cube) -> () {
                 solve_cube(in_cube.rotate_facing_counter_clockwise());
                 solve_cube(in_cube.rotate_left_clockwise());
                 solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
                 solve_cube(in_cube.rotate_up_clockwise());
                 solve_cube(in_cube.rotate_up_counter_clockwise());
+                solve_cube(in_cube.rotate_right_clockwise());
             }
             "R`" => {
                 solve_cube(in_cube.rotate_bottom_clockwise());
@@ -198,12 +197,11 @@ fn solve_cube(in_cube: Cube) -> () {
                 solve_cube(in_cube.rotate_facing_counter_clockwise());
                 solve_cube(in_cube.rotate_left_clockwise());
                 solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
                 solve_cube(in_cube.rotate_up_clockwise());
                 solve_cube(in_cube.rotate_up_counter_clockwise());
+                solve_cube(in_cube.rotate_right_counter_clockwise());
             }
             "B" => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
                 solve_cube(in_cube.rotate_down_clockwise());
                 solve_cube(in_cube.rotate_down_counter_clockwise());
                 solve_cube(in_cube.rotate_facing_clockwise());
@@ -214,9 +212,9 @@ fn solve_cube(in_cube: Cube) -> () {
                 solve_cube(in_cube.rotate_right_counter_clockwise());
                 solve_cube(in_cube.rotate_up_clockwise());
                 solve_cube(in_cube.rotate_up_counter_clockwise());
+                solve_cube(in_cube.rotate_bottom_clockwise());
             }
             "B`" => {
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
                 solve_cube(in_cube.rotate_down_clockwise());
                 solve_cube(in_cube.rotate_down_counter_clockwise());
                 solve_cube(in_cube.rotate_facing_clockwise());
@@ -227,6 +225,7 @@ fn solve_cube(in_cube: Cube) -> () {
                 solve_cube(in_cube.rotate_right_counter_clockwise());
                 solve_cube(in_cube.rotate_up_clockwise());
                 solve_cube(in_cube.rotate_up_counter_clockwise());
+                solve_cube(in_cube.rotate_bottom_counter_clockwise());
             }
             _ => {
                 solve_cube(in_cube.rotate_bottom_clockwise());
