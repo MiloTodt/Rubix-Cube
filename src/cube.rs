@@ -442,7 +442,7 @@ impl Cube {
         let mut new_cube = self.copy_cube();
         new_cube.previous_moves.push("L`".to_string());
         new_cube.num_moves += 1;
-        //rotate down side
+        //rotate Left side
         new_cube.sides[4].faces[6] = self.sides[4].faces[0];
         new_cube.sides[4].faces[3] = self.sides[4].faces[1];
         new_cube.sides[4].faces[0] = self.sides[4].faces[2];
@@ -451,19 +451,19 @@ impl Cube {
         new_cube.sides[4].faces[8] = self.sides[4].faces[6];
         new_cube.sides[4].faces[5] = self.sides[4].faces[7];
         new_cube.sides[4].faces[2] = self.sides[4].faces[8];
-        //rotate Front side
+        //rotate Up side
         new_cube.sides[1].faces[0] = self.sides[0].faces[0];
         new_cube.sides[1].faces[3] = self.sides[0].faces[3];
         new_cube.sides[1].faces[6] = self.sides[0].faces[6];
-        //rotate Down side
+        //rotate Front side
         new_cube.sides[0].faces[0] = self.sides[3].faces[0];
         new_cube.sides[0].faces[3] = self.sides[3].faces[3];
         new_cube.sides[0].faces[6] = self.sides[3].faces[6];
-        //rotate Up side
+        //rotate Bottom side
         new_cube.sides[5].faces[2] = self.sides[1].faces[0];
         new_cube.sides[5].faces[5] = self.sides[1].faces[3];
         new_cube.sides[5].faces[8] = self.sides[1].faces[6];
-        //rotate Bottom side
+        //rotate down side
         new_cube.sides[3].faces[0] = self.sides[5].faces[2];
         new_cube.sides[3].faces[3] = self.sides[5].faces[5];
         new_cube.sides[3].faces[6] = self.sides[5].faces[8];
@@ -473,7 +473,7 @@ impl Cube {
         let mut new_cube = self.copy_cube();
         new_cube.previous_moves.push("B".to_string());
         new_cube.num_moves += 1;
-        //rotate down side
+        //rotate bottom side
         new_cube.sides[5].faces[0] = self.sides[5].faces[6];
         new_cube.sides[5].faces[1] = self.sides[5].faces[3];
         new_cube.sides[5].faces[2] = self.sides[5].faces[0];
@@ -490,7 +490,7 @@ impl Cube {
         new_cube.sides[2].faces[2] = self.sides[1].faces[0];
         new_cube.sides[2].faces[5] = self.sides[1].faces[1];
         new_cube.sides[2].faces[8] = self.sides[1].faces[2];
-        //rotate Up side
+        //rotate Down side
         new_cube.sides[3].faces[6] = self.sides[2].faces[2];
         new_cube.sides[3].faces[7] = self.sides[2].faces[5];
         new_cube.sides[3].faces[8] = self.sides[2].faces[8];
@@ -504,7 +504,7 @@ impl Cube {
         let mut new_cube = self.copy_cube();
         new_cube.previous_moves.push("B`".to_string());
         new_cube.num_moves += 1;
-        //rotate down side
+        //rotate bottom side
         new_cube.sides[5].faces[6] = self.sides[5].faces[0];
         new_cube.sides[5].faces[3] = self.sides[5].faces[1];
         new_cube.sides[5].faces[0] = self.sides[5].faces[2];
@@ -513,19 +513,19 @@ impl Cube {
         new_cube.sides[5].faces[8] = self.sides[5].faces[6];
         new_cube.sides[5].faces[5] = self.sides[5].faces[7];
         new_cube.sides[5].faces[2] = self.sides[5].faces[8];
-        //rotate Up side
+        //rotate front side
         new_cube.sides[4].faces[0] = self.sides[1].faces[0];
         new_cube.sides[4].faces[3] = self.sides[1].faces[1];
         new_cube.sides[4].faces[6] = self.sides[1].faces[2];
-        //rotate Right side
+        //rotate up side
         new_cube.sides[1].faces[0] = self.sides[2].faces[2];
         new_cube.sides[1].faces[1] = self.sides[2].faces[5];
         new_cube.sides[1].faces[2] = self.sides[2].faces[8];
-        //rotate Up side
+        //rotate right side
         new_cube.sides[2].faces[2] = self.sides[3].faces[6];
         new_cube.sides[2].faces[5] = self.sides[3].faces[7];
         new_cube.sides[2].faces[8] = self.sides[3].faces[8];
-        //rotate Left side
+        //rotate down side
         new_cube.sides[3].faces[6] = self.sides[4].faces[0];
         new_cube.sides[3].faces[7] = self.sides[4].faces[3];
         new_cube.sides[3].faces[8] = self.sides[4].faces[6];
