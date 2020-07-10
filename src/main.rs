@@ -5,8 +5,8 @@ use cube::Cube;
 use cube::Side;
 use std::thread;
 
-static NUMBER_OF_MOVES: u8 = 7; //Number of random moves applied to cube. Setting this higher will take a long time by a factor of 11^N 
-static mut SOLVE_DEPTH: u8 = NUMBER_OF_MOVES + 1;
+static NUMBER_OF_MOVES: usize = 7; //Number of random moves applied to cube. Setting this higher will take a long time by a factor of 11^N
+static mut SOLVE_DEPTH: usize = NUMBER_OF_MOVES + 1;
 
 fn main() {
     let cube = build_cube().scramble_cube(NUMBER_OF_MOVES);
@@ -25,7 +25,8 @@ fn main() {
             thread::spawn(move || {
                 solve_cube(c);
             })
-        }).collect();
+        })
+        .collect();
 
     for h in handles {
         h.join().unwrap();
@@ -50,198 +51,48 @@ fn starter_cubes(old_cube: Cube) -> Vec<Cube> {
     out_cubes
 }
 fn solve_cube(in_cube: Cube) -> () {
+    let num_moves = in_cube.num_moves;
+    let previous_moves = &in_cube.previous_moves;
     unsafe {
-        if in_cube.num_moves >= SOLVE_DEPTH {
+        if num_moves >= SOLVE_DEPTH {
             return;
         }
     }
     if in_cube.is_solved() {
         unsafe {
-            if in_cube.num_moves < SOLVE_DEPTH {
-                SOLVE_DEPTH = in_cube.num_moves;
+            if num_moves < SOLVE_DEPTH {
+                SOLVE_DEPTH = num_moves;
             }
         }
         println!(
             "Found solution in {} moves:  {:?}",
-            in_cube.num_moves, in_cube.previous_moves
+            num_moves, previous_moves
         );
     } else {
-        //This statement prevents doing the opposite of the previous move, which would revert the previous move and put it to a state that has already been checked.
-        //From benchmarking tests, this reduces runtime by about 30%
-        let last_move = in_cube.previous_moves.last().unwrap().as_str();
-        match last_move {
-            "F" => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_down_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-            }
-            "F`" => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_down_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-            }
-            "U" => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_down_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-            }
+        //If last two moves are opposites of one another, can not be minimal solution
+        if num_moves >= 2 { 
+            let second_last_move = &previous_moves[(num_moves - 2)].as_str();
+            let last_move = &previous_moves.last().unwrap().as_str();
 
-            "U'" => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_down_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
-            }
-            "D" => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
-                solve_cube(in_cube.rotate_down_clockwise());
-            }
-            "D`" => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-            }
-            "L" => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_down_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
-            }
-            "L`" => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_down_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
-            }
-            "R" => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_down_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-            }
-            "R`" => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_down_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-            }
-            "B" => {
-                solve_cube(in_cube.rotate_down_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
-                solve_cube(in_cube.rotate_bottom_clockwise());
-            }
-            "B`" => {
-                solve_cube(in_cube.rotate_down_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-            }
-            _ => {
-                solve_cube(in_cube.rotate_bottom_clockwise());
-                solve_cube(in_cube.rotate_bottom_counter_clockwise());
-                solve_cube(in_cube.rotate_down_clockwise());
-                solve_cube(in_cube.rotate_down_counter_clockwise());
-                solve_cube(in_cube.rotate_facing_clockwise());
-                solve_cube(in_cube.rotate_facing_counter_clockwise());
-                solve_cube(in_cube.rotate_left_clockwise());
-                solve_cube(in_cube.rotate_left_counter_clockwise());
-                solve_cube(in_cube.rotate_right_clockwise());
-                solve_cube(in_cube.rotate_right_counter_clockwise());
-                solve_cube(in_cube.rotate_up_clockwise());
-                solve_cube(in_cube.rotate_up_counter_clockwise());
+            if (last_move.to_string() == format!("{}{}", second_last_move, "`"))
+                || (second_last_move.to_string() == format!("{}{}", last_move, "`"))
+            {
+                return;
             }
         }
+        
+        solve_cube(in_cube.rotate_bottom_clockwise());
+        solve_cube(in_cube.rotate_bottom_counter_clockwise());
+        solve_cube(in_cube.rotate_down_clockwise());
+        solve_cube(in_cube.rotate_down_counter_clockwise());
+        solve_cube(in_cube.rotate_left_clockwise());
+        solve_cube(in_cube.rotate_left_counter_clockwise());
+        solve_cube(in_cube.rotate_right_clockwise());
+        solve_cube(in_cube.rotate_right_counter_clockwise());
+        solve_cube(in_cube.rotate_up_clockwise());
+        solve_cube(in_cube.rotate_up_counter_clockwise());
+        solve_cube(in_cube.rotate_facing_clockwise());
+        solve_cube(in_cube.rotate_facing_counter_clockwise());
     }
 }
 

@@ -24,7 +24,7 @@ impl Side {
 pub struct Cube {
     pub sides: Vec<Side>,
     pub previous_moves: Vec<String>,
-    pub num_moves: u8,
+    pub num_moves: usize,
 }
 impl Cube {
     pub fn copy_cube(&self) -> Cube {
@@ -51,7 +51,7 @@ impl Cube {
         true
     }
 
-    pub fn scramble_cube(&self, n: u8) -> Cube {
+    pub fn scramble_cube(&self, n: usize) -> Cube {
         //Applies n random moves to cube.
         let mut new_cube = self.copy_cube();
         for _ in 0..n {
