@@ -70,7 +70,7 @@ fn solve_cube(in_cube: Cube) -> () {
         );
     } else {
         //If last two moves are opposites of one another, can not be minimal solution
-        if num_moves >= 2 { 
+        if num_moves >= 2 {
             let second_last_move = &previous_moves[(num_moves - 2)].as_str();
             let last_move = &previous_moves.last().unwrap().as_str();
 
@@ -79,8 +79,14 @@ fn solve_cube(in_cube: Cube) -> () {
             {
                 return;
             }
+            if num_moves >= 3 {
+                // Three of the same move in a row could be a single one opposite instead, can't be minimal solution
+                let third_last_move = &previous_moves[(num_moves - 3)].as_str();
+                if (third_last_move, second_last_move) == (second_last_move, last_move) {
+                    return;
+                }
+            }
         }
-        
         solve_cube(in_cube.rotate_bottom_clockwise());
         solve_cube(in_cube.rotate_bottom_counter_clockwise());
         solve_cube(in_cube.rotate_down_clockwise());
