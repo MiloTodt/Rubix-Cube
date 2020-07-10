@@ -12,7 +12,7 @@ The notation used is https://solvethecube.com/notation
 ## Requirements 
 Rust tool chain. Install with
 ```
-curl https://sh.rustup.rs -sSf | sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
 ## To run
