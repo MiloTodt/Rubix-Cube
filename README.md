@@ -3,8 +3,6 @@
 
 Finds the minimal number of moves to solve a Rubix cube utilizing a binomial heap.
 
-Written fully by hand in Rust.
-
 Only use of non-standard library is a single call to generate a random number.
 
 The notation used is https://solvethecube.com/notation
