@@ -159,6 +159,8 @@ impl Cube {
             self.sides[3].faces[8]
         )
     }
+
+    // TODO: Generalize these functions using a matrix transform.
     pub fn rotate_facing_clockwise(&self) -> Cube {
         let mut new_cube = self.copy_cube();
         new_cube.previous_moves.push("F".to_string());
